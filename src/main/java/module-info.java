@@ -9,5 +9,6 @@ module org.example.expensetrackerui {
 
     opens org.example.expensetrackerui to javafx.fxml;
     opens org.example.expensetrackerui.controllers to javafx.fxml;
+    opens org.example.expensetrackerui.models to com.google.gson;
     exports org.example.expensetrackerui;
 }
