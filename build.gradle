@@ -26,7 +26,7 @@ tasks.withType(JavaCompile) {
 
 application {
     mainModule = 'org.example.expensetrackerui'
-    mainClass = 'org.example.expensetrackerui.HelloApplication'
+    mainClass = 'org.example.expensetrackerui.App'
 }
 
 javafx {
@@ -35,9 +35,14 @@ javafx {
 }
 
 dependencies {
+    implementation('io.github.palexdev:materialfx:11.17.0')
+    implementation('com.google.code.gson:gson:2.8.9')
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+
+    compileOnly('org.projectlombok:lombok:1.18.34')
+    annotationProcessor('org.projectlombok:lombok:1.18.34')
 }
 
 test {
