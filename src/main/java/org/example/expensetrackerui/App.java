@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.example.expensetrackerui.utils.JwtStorageUtil;
 
 import java.io.IOException;
 
@@ -27,12 +28,26 @@ public class App extends Application {
         stage.setTitle(APP_TITLE);
         stage.initStyle(StageStyle.DECORATED);
 
-        loadLoginScreen(stage);
+        if (JwtStorageUtil.getToken() == null)
+            loadLoginScreen(stage);
+        else
+            loadLoadingScreen(stage);
     }
 
     private void loadLoginScreen(Stage stage) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass()
                 .getResource("/org/example/expensetrackerui/views/LoginScreen.fxml"));
+
+        Scene scene = new Scene(loader.load());
+        scene.getStylesheets()
+                .add(getClass().getResource("/org/example/expensetrackerui/css/style.css").toExternalForm());
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void loadLoadingScreen(Stage stage) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass()
+                .getResource("/org/example/expensetrackerui/views/LoadingScreen.fxml"));
 
         Scene scene = new Scene(loader.load());
         scene.getStylesheets()
