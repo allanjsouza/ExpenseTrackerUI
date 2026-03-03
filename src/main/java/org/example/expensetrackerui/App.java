@@ -27,11 +27,14 @@ public class App extends Application {
 
         stage.setTitle(APP_TITLE);
         stage.initStyle(StageStyle.DECORATED);
+        stage.setWidth(900);
+        stage.setHeight(600);
+        stage.setResizable(false);
 
         if (JwtStorageUtil.getToken() == null)
             loadLoginScreen(stage);
         else
-            loadLoadingScreen(stage);
+            loadMainScreen(stage);
     }
 
     private void loadLoginScreen(Stage stage) throws IOException {
@@ -41,6 +44,17 @@ public class App extends Application {
         Scene scene = new Scene(loader.load());
         scene.getStylesheets()
                 .add(getClass().getResource("/org/example/expensetrackerui/css/style.css").toExternalForm());
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void loadMainScreen(Stage stage) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass()
+                .getResource("/org/example/expensetrackerui/views/MainScreen.fxml"));
+
+        Scene scene = new Scene(loader.load());
+        scene.getStylesheets()
+                .add(getClass().getResource("/org/example/expensetrackerui/css/main_screen.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
