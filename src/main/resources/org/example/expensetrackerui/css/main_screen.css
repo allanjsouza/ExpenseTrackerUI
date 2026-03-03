@@ -111,3 +111,29 @@
     -fx-max-height: 0;
     -fx-border-width: 0;
 }
+
+/* Table row styling */
+.expense-table .table-row-cell {
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent;
+}
+
+.expense-table .table-row-cell:odd {
+    -fx-background-color: #f4f4f4; /* Alternate row colors */
+}
+
+.expense-table .table-row-cell:hover {
+    -fx-background-color: #e0f7fa; /* Highlighted row on hover */
+}
+
+/* Column text alignment */
+.table-column {
+    -fx-alignment: center-left;
+    -fx-padding: 5px;
+}
+
+/* Styling for the selected row */
+.expense-table .table-row-cell:selected {
+    -fx-background-color: #b2dfdb;
+    -fx-text-fill: #000000;
+}

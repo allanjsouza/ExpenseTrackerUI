@@ -6,9 +6,10 @@ module org.example.expensetrackerui {
     requires static lombok;
     requires MaterialFX;
     requires java.prefs;
+    requires javafx.base;
 
     opens org.example.expensetrackerui to javafx.fxml;
     opens org.example.expensetrackerui.controllers to javafx.fxml;
-    opens org.example.expensetrackerui.models to com.google.gson;
+    opens org.example.expensetrackerui.models to com.google.gson, javafx.base;
     exports org.example.expensetrackerui;
 }

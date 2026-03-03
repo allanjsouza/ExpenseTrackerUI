@@ -5,15 +5,27 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import org.example.expensetrackerui.models.Expense;
+import org.example.expensetrackerui.models.ExpenseData;
 import org.example.expensetrackerui.services.AuthService;
+import org.example.expensetrackerui.utils.ExpenseDataParser;
+import org.example.expensetrackerui.utils.HttpClientUtil;
 import org.example.expensetrackerui.utils.JwtStorageUtil;
+
 import java.io.IOException;
+import java.net.http.HttpResponse;
 import java.time.LocalDate;
+import java.util.List;
 
 public class MainController {
+    private static final String BASE_URL = "http://localhost:8080";
+
     public DatePicker datePicker;
     public MFXButton addExpenseButton;
     public MFXButton monthlyStatsButton;
@@ -26,8 +38,111 @@ public class MainController {
     public TableColumn editColumn;
     public TableColumn deleteColumn;
 
+    private ExpenseData expenseData;
+
     @FXML
     public void initialize() {
+        LocalDate currentDate = LocalDate.now();
+        datePicker.setValue(currentDate);
+
+        expensesTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+
+        categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("note"));
+        amountColumn.setCellValueFactory(new PropertyValueFactory<>("amount"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+
+        addEditButtonToTable();
+        addDeleteButtonToTable();
+
+        expensesTable.getColumns().add(categoryColumn);
+        expensesTable.getColumns().add(descriptionColumn);
+        expensesTable.getColumns().add(amountColumn);
+        expensesTable.getColumns().add(dateColumn);
+        expensesTable.getColumns().add(editColumn);
+        expensesTable.getColumns().add(deleteColumn);
+
+        fetchExpensesByDate(currentDate.toString());
+
+        datePicker.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            if (newValue != null)
+                fetchExpensesByDate(newValue.toString());
+        }));
+    }
+
+    private void addEditButtonToTable() {
+        Callback<TableColumn<Expense, Void>, TableCell<Expense, Void>>
+                cellFactory = param -> new TableCell<Expense, Void>() {
+            private final MFXButton btn = new MFXButton("Edit");
+            {
+                btn.setOnAction(event -> {
+                    Expense expense = getTableView().getItems().get(getIndex());
+                    System.out.println("Edit: " + expense.getNote());
+                    // TODO: add edit logic here
+                });
+                btn.getStyleClass().add("outlined-button");
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty)
+                    setGraphic(null);
+                else
+                    setGraphic(btn);
+            }
+        };
+        editColumn.setCellFactory(cellFactory);
+    }
+
+    private void addDeleteButtonToTable() {
+        Callback<TableColumn<Expense, Void>, TableCell<Expense, Void>>
+                cellFactory = param -> new TableCell<Expense, Void>() {
+            private final MFXButton btn = new MFXButton("Delete");
+            {
+                btn.setOnAction(event -> {
+                    Expense expense = getTableView().getItems().get(getIndex());
+                    System.out.println("Delete: " + expense.getNote());
+                    // TODO: add delete logic here
+                });
+                btn.getStyleClass().add("outlined-button");
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty)
+                    setGraphic(null);
+                else
+                    setGraphic(btn);
+            }
+        };
+        deleteColumn.setCellFactory(cellFactory);
+    }
+
+    private void fetchExpensesByDate(String date) {
+        String token = JwtStorageUtil.getToken();
+
+        if (token == null || token.isEmpty()) {
+            System.out.println("There is no token");
+            return;
+        }
+
+        String url = BASE_URL + "/expenses?date=" + date;
+        try {
+            HttpResponse<String> response = HttpClientUtil.get(url, token);
+
+            if (response.statusCode() == 200) {
+                List<Expense> expenses = ExpenseDataParser.parseExpenseList(response.body());
+                expensesTable.getItems().clear();
+                expensesTable.getItems().addAll(expenses);
+            } else {
+                System.out.println("Error: " + response.toString());
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     private void handleLogout() {

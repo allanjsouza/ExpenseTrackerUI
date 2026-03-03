@@ -22,7 +22,13 @@ public class HttpClientUtil {
         return client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     }
 
-    private static HttpResponse<String> get(String url, String token) {
-        return null;
+    public static HttpResponse<String> get(String url, String token) throws IOException, InterruptedException {
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Authorization", "Bearer " + token)
+                .GET()
+                .build();
+
+        return client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
     }
 }
