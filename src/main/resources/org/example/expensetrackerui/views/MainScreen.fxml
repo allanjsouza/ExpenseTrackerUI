@@ -19,7 +19,7 @@
             <MFXButton fx:id="addExpenseButton" text="Add Expense" styleClass="outlined-button"/>
             <MFXButton fx:id="monthlyStatsButton" text="Monthly stats" styleClass="outlined-button"/>
             <Region VBox.vgrow="ALWAYS"/>
-            <MFXButton fx:id="logoutButton" text="Logout" styleClass="solid-button"/>
+            <MFXButton fx:id="logoutButton" text="Logout" styleClass="solid-button" onAction="#handleLogout"/>
         </VBox>
         <!--    Expenses table    -->
         <VBox spacing="20" styleClass="expenses-table-container" HBox.hgrow="ALWAYS">

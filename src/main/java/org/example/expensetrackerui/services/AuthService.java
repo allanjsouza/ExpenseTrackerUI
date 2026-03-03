@@ -3,7 +3,6 @@ package org.example.expensetrackerui.services;
 import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.expensetrackerui.models.AuthRequest;
@@ -49,7 +48,7 @@ public class AuthService {
 
                 if (authResponse.getAccessToken() != null) {
                     JwtStorageUtil.storeToken(authResponse.getAccessToken());
-                    Platform.runLater(() -> navigateToLoadingScreen(stage));
+                    Platform.runLater(() -> navigateToMainScreen(stage));
                 } else {
                     System.out.println(authResponse.getMessage());
                 }
@@ -68,6 +67,20 @@ public class AuthService {
             loadingScene.getStylesheets().add(
                     AuthService.class.getResource("/org/example/expensetrackerui/css/style.css").toExternalForm());
             stage.setScene(loadingScene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void navigateToMainScreen(Stage stage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(AuthService.class
+                    .getResource("/org/example/expensetrackerui/views/MainScreen.fxml"));
+
+            Scene mainScene = new Scene(loader.load());
+            mainScene.getStylesheets().add(
+                    AuthService.class.getResource("/org/example/expensetrackerui/css/main_screen.css").toExternalForm());
+            stage.setScene(mainScene);
         } catch (IOException e) {
             e.printStackTrace();
         }

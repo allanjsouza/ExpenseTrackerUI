@@ -14,7 +14,7 @@ public class JwtStorageUtil {
         return prefs.get(JWT_KEY, null);
     }
 
-    public void clearToken() {
+    public static void clearToken() {
         prefs.remove(JWT_KEY);
     }
 }
