@@ -27,15 +27,13 @@ public class MainController {
     public MFXButton addExpenseButton;
     public MFXButton monthlyStatsButton;
     public MFXButton logoutButton;
-    public TableView expensesTable;
-    public TableColumn categoryColumn;
-    public TableColumn descriptionColumn;
-    public TableColumn amountColumn;
-    public TableColumn dateColumn;
-    public TableColumn editColumn;
-    public TableColumn deleteColumn;
-
-    private ExpenseData expenseData;
+    public TableView<Expense> expensesTable;
+    public TableColumn<Expense, String> categoryColumn;
+    public TableColumn<Expense, String> descriptionColumn;
+    public TableColumn<Expense, String> amountColumn;
+    public TableColumn<Expense, String> dateColumn;
+    public TableColumn<Expense, Void> editColumn;
+    public TableColumn<Expense, Void> deleteColumn;
 
     @FXML
     public void initialize() {
@@ -68,8 +66,7 @@ public class MainController {
     }
 
     private void addEditButtonToTable() {
-        Callback<TableColumn<Expense, Void>, TableCell<Expense, Void>>
-                cellFactory = param -> new TableCell<Expense, Void>() {
+        Callback<TableColumn<Expense, Void>, TableCell<Expense, Void>> cellFactory = param -> new TableCell<>() {
             private final MFXButton btn = new MFXButton("Edit");
             {
                 btn.setOnAction(event -> {
@@ -93,8 +90,7 @@ public class MainController {
     }
 
     private void addDeleteButtonToTable() {
-        Callback<TableColumn<Expense, Void>, TableCell<Expense, Void>>
-                cellFactory = param -> new TableCell<Expense, Void>() {
+        Callback<TableColumn<Expense, Void>, TableCell<Expense, Void>> cellFactory = param -> new TableCell<>() {
             private final MFXButton btn = new MFXButton("Delete");
             {
                 btn.setOnAction(event -> {
@@ -134,7 +130,7 @@ public class MainController {
                 expensesTable.getItems().clear();
                 expensesTable.getItems().addAll(expenses);
             } else {
-                System.out.println("Error: " + response.toString());
+                System.out.println("Error: " + response);
             }
         } catch (AuthException e) {
             handleAuthenticationFailure();
