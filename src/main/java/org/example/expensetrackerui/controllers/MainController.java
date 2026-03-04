@@ -4,15 +4,12 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.example.expensetrackerui.exceptions.AuthException;
 import org.example.expensetrackerui.models.Expense;
-import org.example.expensetrackerui.models.ExpenseData;
 import org.example.expensetrackerui.services.AuthService;
 import org.example.expensetrackerui.utils.ExpenseDataParser;
 import org.example.expensetrackerui.utils.HttpClientUtil;
@@ -62,7 +59,7 @@ public class MainController {
         expensesTable.getColumns().add(editColumn);
         expensesTable.getColumns().add(deleteColumn);
 
-        fetchExpensesByDate(currentDate.toString());
+        expensesTable.getItems().clear();
 
         datePicker.valueProperty().addListener(((observable, oldValue, newValue) -> {
             if (newValue != null)
@@ -139,6 +136,8 @@ public class MainController {
             } else {
                 System.out.println("Error: " + response.toString());
             }
+        } catch (AuthException e) {
+            handleAuthenticationFailure();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -152,6 +151,35 @@ public class MainController {
                     .getResource("/org/example/expensetrackerui/views/LoginScreen.fxml"));
 
             Stage stage = (Stage) logoutButton.getScene().getWindow();
+            Scene loginScene = new Scene(loader.load());
+            loginScene.getStylesheets().add(
+                    AuthService.class.getResource("/org/example/expensetrackerui/css/style.css").toExternalForm());
+            stage.setScene(loginScene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleAuthenticationFailure() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Session expired");
+        alert.setHeaderText(null);
+        alert.setContentText("Your session has expired. Please log in again.");
+        alert.setOnHiding(event -> {
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            redirectToLogin(stage);
+        });
+
+        alert.showAndWait();
+    }
+
+    private void redirectToLogin(Stage stage) {
+        JwtStorageUtil.clearToken();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("/org/example/expensetrackerui/views/LoginScreen.fxml"));
+
             Scene loginScene = new Scene(loader.load());
             loginScene.getStylesheets().add(
                     AuthService.class.getResource("/org/example/expensetrackerui/css/style.css").toExternalForm());
