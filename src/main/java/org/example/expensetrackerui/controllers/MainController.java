@@ -6,6 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.example.expensetrackerui.exceptions.AuthException;
@@ -152,6 +154,30 @@ public class MainController {
                     AuthService.class.getResource("/org/example/expensetrackerui/css/style.css").toExternalForm());
             stage.setScene(loginScene);
             stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleAddExpense() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("/org/example/expensetrackerui/views/ExpenseScreen.fxml"));
+            VBox expensePane = loader.load();
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            Scene scene = new Scene(expensePane);
+
+            scene.getStylesheets().add(getClass().getResource("/org/example/expensetrackerui/css/expense_screen.css").toExternalForm());
+
+            stage.setScene(scene);
+            stage.setTitle("Add Expense");
+
+            stage.setWidth(600);
+            stage.setResizable(false);
+            stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }

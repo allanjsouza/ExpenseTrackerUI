@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.expensetrackerui.controllers.ExpenseController"
+      styleClass="expense-form">
+    <HBox spacing="20" styleClass="hbox-centered">
+        <MFXComboBox fx:id="expenseTypeDropdown" promptText="Expense type" styleClass="dropdown-half"/>
+        <DatePicker fx:id="datePicker" promptText="Select date" styleClass="date-picker-half"/>
+    </HBox>
+    <HBox spacing="20" styleClass="hbox-centered">
+        <MFXTextField fx:id="amountField" promptText="Enter amount" styleClass="textfield-half"/>
+        <MFXComboBox fx:id="categoryDropdown" promptText="Select category" styleClass="dropdown-half"/>
+    </HBox>
+    <HBox spacing="20" styleClass="hbox-centered">
+        <MFXComboBox fx:id="accountDropdown" promptText="Select account" styleClass="dropdown-half"/>
+        <MFXTextField fx:id="noteField" promptText="Enter note" styleClass="textfield-half"/>
+    </HBox>
+    <HBox styleClass="hbox-centered">
+        <MFXButton fx:id="submitButton" text="Submit" styleClass="submit-button"/>
+    </HBox>
+</VBox>
