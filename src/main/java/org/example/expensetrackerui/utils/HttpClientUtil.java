@@ -12,7 +12,8 @@ import java.net.http.HttpResponse;
 public class HttpClientUtil {
     private static final HttpClient client = HttpClient.newBuilder().build();
     private static final Gson gson = new Gson();
-    // TODO: bring the BASE_URL constant here
+
+    private static final String BASE_URL = "http://localhost:8080";
 
     public static HttpResponse<String> post(String url, String jsonBody) throws IOException, InterruptedException {
         HttpRequest httpRequest = HttpRequest.newBuilder()
@@ -22,6 +23,22 @@ public class HttpClientUtil {
                 .build();
 
         return client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+    }
+
+    public static HttpResponse<String> post(String endpoint, String token, String jsonBody) throws IOException, InterruptedException, AuthException {
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + endpoint))
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 403)
+            throw new AuthException("Session has expired. Please log in again.");
+
+        return response;
     }
 
     public static HttpResponse<String> get(String url, String token) throws IOException, InterruptedException, AuthException {

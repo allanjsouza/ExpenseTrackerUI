@@ -18,4 +18,8 @@ public class ExpenseDataParser {
         Type expenseListType = new TypeToken<List<Expense>>() {}.getType();
         return gson.fromJson(jsonResponseBody, expenseListType);
     }
+
+    public static String serializeExpense(Expense expense) {
+        return gson.toJson(expense);
+    }
 }

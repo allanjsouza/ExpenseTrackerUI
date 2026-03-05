@@ -7,7 +7,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
+import org.example.expensetrackerui.exceptions.AuthException;
+import org.example.expensetrackerui.models.Expense;
+import org.example.expensetrackerui.utils.ExpenseDataParser;
+import org.example.expensetrackerui.utils.HttpClientUtil;
+import org.example.expensetrackerui.utils.JwtStorageUtil;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 public class ExpenseController {
@@ -49,11 +55,24 @@ public class ExpenseController {
     private void handleSubmit() {
         if (!validateForm()) return;
 
-        String expenseType = expenseTypeDropdown.getValue().equals("Expense") ? "0" : "1";
+        int expenseType = expenseTypeDropdown.getValue().equals("Expense") ? 0 : 1;
         LocalDate date = datePicker.getValue();
         double amount = Double.parseDouble(amountField.getText());
         String category = (String) categoryDropdown.getValue();
+        String account = accountDropdown.getValue();
         String note = noteField.getText();
+
+        String token = JwtStorageUtil.getToken();
+        String expenseJson = ExpenseDataParser.serializeExpense(
+                new Expense(0L, expenseType, date, amount, category, account, note)
+        );
+        try {
+            HttpClientUtil.post("/expenses", token, expenseJson);
+        } catch (AuthException e) {
+            handleAuthenticationFailure();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
 
         Stage stage = (Stage) submitButton.getScene().getWindow();
         stage.close();
@@ -113,6 +132,15 @@ public class ExpenseController {
         alert.setTitle("Validation error!");
         alert.setHeaderText(null);
         alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void handleAuthenticationFailure() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Session expired");
+        alert.setHeaderText(null);
+        alert.setContentText("Your session has expired. Please log in again.");
+
         alert.showAndWait();
     }
 }
