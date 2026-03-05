@@ -254,10 +254,20 @@ public class MainController {
         alert.setContentText("Expense: " + expense.getNote() + " $" + String.valueOf(expense.getAmount()));
         alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
         alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK)
-                System.out.println("Delete it!");
-            else
-                System.out.println("Cancel");
+            if (response == ButtonType.OK) deleteExpense(expense);
         });
+    }
+
+    private void deleteExpense(Expense expense) {
+        String token = JwtStorageUtil.getToken();
+
+        try {
+            HttpClientUtil.delete("/expenses/" + expense.getId(), token);
+            refreshExpenses();
+        } catch (AuthException e) {
+            handleAuthenticationFailure();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -71,4 +71,19 @@ public class HttpClientUtil {
 
         return response;
     }
+
+    public static HttpResponse<String> delete(String endpoint, String token) throws IOException, InterruptedException, AuthException {
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + endpoint))
+                .header("Authorization", "Bearer " + token)
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 403)
+            throw new AuthException("Session has expired. Please log in again.");
+
+        return response;
+    }
 }
