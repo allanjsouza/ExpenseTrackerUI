@@ -26,6 +26,6 @@
         <MFXTextField fx:id="noteField" promptText="Enter note" styleClass="textfield-half"/>
     </HBox>
     <HBox styleClass="hbox-centered">
-        <MFXButton fx:id="submitButton" text="Submit" styleClass="submit-button"/>
+        <MFXButton fx:id="submitButton" text="Submit" styleClass="submit-button" onAction="#handleSubmit"/>
     </HBox>
 </VBox>

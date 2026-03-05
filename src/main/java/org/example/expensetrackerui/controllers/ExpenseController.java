@@ -3,6 +3,8 @@ package org.example.expensetrackerui.controllers;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
 
@@ -12,8 +14,8 @@ public class ExpenseController {
     public MFXComboBox expenseTypeDropdown;
     public DatePicker datePicker;
     public MFXTextField amountField;
-    public MFXComboBox categoryDropdown;
-    public MFXComboBox accountDropdown;
+    public MFXComboBox<String> categoryDropdown;
+    public MFXComboBox<String> accountDropdown;
     public MFXTextField noteField;
     public MFXButton submitButton;
 
@@ -27,6 +29,8 @@ public class ExpenseController {
         accountDropdown.getItems().addAll("Bank", "Cash", "Card");
 
         if (!isEditMode) datePicker.setValue(LocalDate.now());
+        datePicker.getEditor().setDisable(true);
+        datePicker.getEditor().setOpacity(1);
     }
 
     public void initEditMode(Long expenseId, String expenseType, LocalDate date, double amount, String category,
@@ -41,7 +45,10 @@ public class ExpenseController {
         noteField.setText(note);
     }
 
+    @FXML
     private void handleSubmit() {
+        if (!validateForm()) return;
+
         String expenseType = expenseTypeDropdown.getValue().equals("Expense") ? "0" : "1";
         LocalDate date = datePicker.getValue();
         double amount = Double.parseDouble(amountField.getText());
@@ -50,5 +57,62 @@ public class ExpenseController {
 
         Stage stage = (Stage) submitButton.getScene().getWindow();
         stage.close();
+    }
+
+    private boolean validateForm() {
+        if (expenseTypeDropdown.getValue() == null) {
+            showErrorMessage("Please select an expense type.");
+            return false;
+        }
+
+        LocalDate date;
+        try {
+            date = datePicker.getValue();
+            LocalDate today = LocalDate.now();
+            if (date == null || date.isAfter(today) || date.isBefore(today.minusYears(1))) {
+                showErrorMessage("Please select a valid date.");
+                return false;
+            }
+        } catch (Exception e) {
+            showErrorMessage("Invalid date selected.");
+            return false;
+        }
+
+        String amountText = amountField.getText();
+        if (amountText == null || amountText.isBlank()) {
+            showErrorMessage("Amount can not be empty.");
+            return false;
+        }
+        try {
+            Double.parseDouble(amountText);
+        } catch (NumberFormatException e) {
+            showErrorMessage("Amount must be a numeric value.");
+            return false;
+        }
+
+        if (categoryDropdown.getValue() == null) {
+            showErrorMessage("Please select a category.");
+            return false;
+        }
+
+        if (accountDropdown.getValue() == null) {
+            showErrorMessage("Please select an account.");
+            return false;
+        }
+
+        if (noteField.getText() == null || noteField.getText().isBlank()) {
+            showErrorMessage("Please enter a note.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void showErrorMessage(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Validation error!");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
