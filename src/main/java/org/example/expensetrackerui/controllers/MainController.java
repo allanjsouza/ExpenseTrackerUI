@@ -166,6 +166,10 @@ public class MainController {
                     .getResource("/org/example/expensetrackerui/views/ExpenseScreen.fxml"));
             VBox expensePane = loader.load();
 
+            ExpenseController controller = loader.getController();
+            controller.setMainController(this);
+            if (datePicker.getValue() != null) controller.datePicker.setValue(datePicker.getValue());
+
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             Scene scene = new Scene(expensePane);
@@ -210,5 +214,10 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void refreshExpenses() {
+        LocalDate selectedDate = datePicker.getValue();
+        if (selectedDate != null) fetchExpensesByDate(selectedDate.toString());
     }
 }

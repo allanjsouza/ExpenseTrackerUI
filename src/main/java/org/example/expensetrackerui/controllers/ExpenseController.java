@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.stage.Stage;
+import lombok.Setter;
 import org.example.expensetrackerui.exceptions.AuthException;
 import org.example.expensetrackerui.models.Expense;
 import org.example.expensetrackerui.utils.ExpenseDataParser;
@@ -27,6 +28,9 @@ public class ExpenseController {
 
     private Long expenseId = null;
     private boolean isEditMode = false;
+
+    @Setter
+    private MainController mainController;
 
     public void initialize() {
         expenseTypeDropdown.getItems().addAll("Expense", "Income");
@@ -68,14 +72,15 @@ public class ExpenseController {
         );
         try {
             HttpClientUtil.post("/expenses", token, expenseJson);
+            if (mainController != null) mainController.refreshExpenses();
         } catch (AuthException e) {
             handleAuthenticationFailure();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            Stage stage = (Stage) submitButton.getScene().getWindow();
+            stage.close();
         }
-
-        Stage stage = (Stage) submitButton.getScene().getWindow();
-        stage.close();
     }
 
     private boolean validateForm() {
