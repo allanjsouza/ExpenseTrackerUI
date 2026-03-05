@@ -3,6 +3,7 @@ package org.example.expensetrackerui.controllers;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
@@ -43,16 +44,18 @@ public class ExpenseController {
         datePicker.getEditor().setOpacity(1);
     }
 
-    public void initEditMode(Long expenseId, String expenseType, LocalDate date, double amount, String category,
-                                   String account, String note) {
+    public void initEditMode(Expense expense) {
         this.isEditMode = true;
-        this.expenseId = expenseId;
-        expenseTypeDropdown.setValue(expenseType.equals("0") ? "Expense" : "Income");
-        datePicker.setValue(date);
-        amountField.setText(String.valueOf(amount));
-        categoryDropdown.setValue(category);
-        accountDropdown.setValue(account);
-        noteField.setText(note);
+        this.expenseId = expense.getId();
+
+        Platform.runLater(() -> {
+            expenseTypeDropdown.setValue(expense.getExpenseType() == 0 ? "Expense" : "Income");
+            datePicker.setValue(expense.getDate());
+            amountField.setText(String.valueOf(expense.getAmount()));
+            categoryDropdown.setValue(expense.getCategory());
+            accountDropdown.setValue(expense.getAccount());
+            noteField.setText(expense.getNote());
+        });
     }
 
     @FXML

@@ -73,8 +73,7 @@ public class MainController {
             {
                 btn.setOnAction(event -> {
                     Expense expense = getTableView().getItems().get(getIndex());
-                    System.out.println("Edit: " + expense.getNote());
-                    // TODO: add edit logic here
+                    openEditExpenseScreen(expense);
                 });
                 btn.getStyleClass().add("outlined-button");
             }
@@ -219,5 +218,29 @@ public class MainController {
     public void refreshExpenses() {
         LocalDate selectedDate = datePicker.getValue();
         if (selectedDate != null) fetchExpensesByDate(selectedDate.toString());
+    }
+
+    private void openEditExpenseScreen(Expense expense) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("/org/example/expensetrackerui/views/ExpenseScreen.fxml"));
+            VBox expensePane = loader.load();
+
+            ExpenseController controller = loader.getController();
+            controller.initEditMode(expense);
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            Scene scene = new Scene(expensePane);
+            scene.getStylesheets().add(
+                    AuthService.class.getResource("/org/example/expensetrackerui/css/expense_screen.css").toExternalForm());
+            stage.setScene(scene);
+            stage.setTitle("Edit expense");
+            stage.setWidth(600);
+            stage.setResizable(false);
+            stage.showAndWait();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
