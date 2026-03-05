@@ -1,6 +1,7 @@
 package org.example.expensetrackerui.controllers;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -65,6 +66,8 @@ public class MainController {
             if (newValue != null)
                 fetchExpensesByDate(newValue.toString());
         }));
+
+        Platform.runLater(this::refreshExpenses);
     }
 
     private void addEditButtonToTable() {
