@@ -99,8 +99,7 @@ public class MainController {
             {
                 btn.setOnAction(event -> {
                     Expense expense = getTableView().getItems().get(getIndex());
-                    System.out.println("Delete: " + expense.getNote());
-                    // TODO: add delete logic here
+                    askForDeleteConfirmation(expense);
                 });
                 btn.getStyleClass().add("outlined-button");
             }
@@ -246,5 +245,19 @@ public class MainController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void askForDeleteConfirmation(Expense expense) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete expense confirmation");
+        alert.setHeaderText("Are you sure you want to delete this expense?");
+        alert.setContentText("Expense: " + expense.getNote() + " $" + String.valueOf(expense.getAmount()));
+        alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK)
+                System.out.println("Delete it!");
+            else
+                System.out.println("Cancel");
+        });
     }
 }
