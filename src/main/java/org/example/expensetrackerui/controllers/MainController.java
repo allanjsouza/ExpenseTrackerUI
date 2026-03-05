@@ -227,6 +227,7 @@ public class MainController {
             VBox expensePane = loader.load();
 
             ExpenseController controller = loader.getController();
+            controller.setMainController(this);
             controller.initEditMode(expense);
 
             Stage stage = new Stage();

@@ -74,13 +74,16 @@ public class ExpenseController {
                 new Expense(0L, expenseType, date, amount, category, account, note)
         );
         try {
-            HttpClientUtil.post("/expenses", token, expenseJson);
-            if (mainController != null) mainController.refreshExpenses();
+            if (isEditMode)
+                HttpClientUtil.put("/expenses/" + expenseId, token, expenseJson);
+            else
+                HttpClientUtil.post("/expenses", token, expenseJson);
         } catch (AuthException e) {
             handleAuthenticationFailure();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         } finally {
+            if (mainController != null) mainController.refreshExpenses();
             Stage stage = (Stage) submitButton.getScene().getWindow();
             stage.close();
         }

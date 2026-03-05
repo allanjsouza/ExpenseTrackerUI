@@ -41,6 +41,22 @@ public class HttpClientUtil {
         return response;
     }
 
+    public static HttpResponse<String> put(String endpoint, String token, String jsonBody) throws IOException, InterruptedException, AuthException {
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + endpoint))
+                .header("Authorization", "Bearer " + token)
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        HttpResponse<String> response = client.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 403)
+            throw new AuthException("Session has expired. Please log in again.");
+
+        return response;
+    }
+
     public static HttpResponse<String> get(String url, String token) throws IOException, InterruptedException, AuthException {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(url))
