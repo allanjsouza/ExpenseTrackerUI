@@ -59,17 +59,6 @@ public class App extends Application {
         stage.show();
     }
 
-    private void loadLoadingScreen(Stage stage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass()
-                .getResource("/org/example/expensetrackerui/views/LoadingScreen.fxml"));
-
-        Scene scene = new Scene(loader.load());
-        scene.getStylesheets()
-                .add(getClass().getResource("/org/example/expensetrackerui/css/style.css").toExternalForm());
-        stage.setScene(scene);
-        stage.show();
-    }
-
     public static void main(String[] args) {
         launch(args);
     }

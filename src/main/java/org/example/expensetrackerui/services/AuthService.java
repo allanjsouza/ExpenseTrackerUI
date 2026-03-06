@@ -28,7 +28,7 @@ public class AuthService {
 
                 if (authResponse.getAccessToken() != null) {
                     JwtStorageUtil.storeToken(authResponse.getAccessToken());
-                    Platform.runLater(() -> navigateToLoadingScreen(stage));
+                    Platform.runLater(() -> navigateToMainScreen(stage));
                 } else {
                     System.out.println(authResponse.getMessage());
                 }
@@ -56,20 +56,6 @@ public class AuthService {
                 e.printStackTrace();
             }
         }).start();
-    }
-
-    private static void navigateToLoadingScreen(Stage stage) {
-        try {
-            FXMLLoader loader = new FXMLLoader(AuthService.class
-                    .getResource("/org/example/expensetrackerui/views/LoadingScreen.fxml"));
-
-            Scene loadingScene = new Scene(loader.load());
-            loadingScene.getStylesheets().add(
-                    AuthService.class.getResource("/org/example/expensetrackerui/css/style.css").toExternalForm());
-            stage.setScene(loadingScene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private static void navigateToMainScreen(Stage stage) {
