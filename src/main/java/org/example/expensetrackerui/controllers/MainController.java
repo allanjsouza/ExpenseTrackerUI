@@ -129,6 +129,7 @@ public class MainController {
 
             if (response.statusCode() == 200) {
                 List<Expense> expenses = ExpenseDataParser.parseExpenseList(response.body());
+                expenses.forEach(e -> e.setAmount(e.getExpenseType() == 0 ? e.getAmount() * -1 : e.getAmount()));
                 expensesTable.getItems().clear();
                 expensesTable.getItems().addAll(expenses);
             } else {
