@@ -21,9 +21,8 @@ public class AuthService {
     public static void signUp(SignUpRequest request, Stage stage) {
         new Thread(() -> {
             try {
-                String url = BASE_URL + "/signup";
                 String jsonBody = gson.toJson(request);
-                HttpResponse<String> response = HttpClientUtil.post(url, jsonBody);
+                HttpResponse<String> response = HttpClientUtil.post("/signup", jsonBody);
                 AuthResponse authResponse = gson.fromJson(response.body(), AuthResponse.class);
 
                 if (authResponse.getAccessToken() != null) {
@@ -41,9 +40,8 @@ public class AuthService {
     public static void login(AuthRequest request, Stage stage) {
         new Thread(() -> {
             try {
-                String url = BASE_URL + "/login";
                 String jsonBody = gson.toJson(request);
-                HttpResponse<String> response = HttpClientUtil.post(url, jsonBody);
+                HttpResponse<String> response = HttpClientUtil.post("/login", jsonBody);
                 AuthResponse authResponse = gson.fromJson(response.body(), AuthResponse.class);
 
                 if (authResponse.getAccessToken() != null) {

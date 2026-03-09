@@ -15,9 +15,9 @@ public class HttpClientUtil {
 
     private static final String BASE_URL = "http://localhost:8080";
 
-    public static HttpResponse<String> post(String url, String jsonBody) throws IOException, InterruptedException {
+    public static HttpResponse<String> post(String endpoint, String jsonBody) throws IOException, InterruptedException {
         HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(URI.create(url))
+                .uri(URI.create(BASE_URL + endpoint))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
                 .build();
@@ -57,9 +57,9 @@ public class HttpClientUtil {
         return response;
     }
 
-    public static HttpResponse<String> get(String url, String token) throws IOException, InterruptedException, AuthException {
+    public static HttpResponse<String> get(String endpoint, String token) throws IOException, InterruptedException, AuthException {
         HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(URI.create(url))
+                .uri(URI.create(BASE_URL + endpoint))
                 .header("Authorization", "Bearer " + token)
                 .GET()
                 .build();

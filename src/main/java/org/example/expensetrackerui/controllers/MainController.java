@@ -25,7 +25,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class MainController {
-    private static final String BASE_URL = "http://localhost:8080";
 
     public DatePicker datePicker;
     public MFXButton addExpenseButton;
@@ -125,9 +124,8 @@ public class MainController {
             return;
         }
 
-        String url = BASE_URL + "/expenses?date=" + date;
         try {
-            HttpResponse<String> response = HttpClientUtil.get(url, token);
+            HttpResponse<String> response = HttpClientUtil.get("/expenses?date=" + date, token);
 
             if (response.statusCode() == 200) {
                 List<Expense> expenses = ExpenseDataParser.parseExpenseList(response.body());
