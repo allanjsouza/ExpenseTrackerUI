@@ -2,6 +2,7 @@ package org.example.expensetrackerui.controllers;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -267,6 +268,28 @@ public class MainController {
         } catch (AuthException e) {
             handleAuthenticationFailure();
         } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleMonthlyStats() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("/org/example/expensetrackerui/views/StatisticsScreen.fxml"));
+            VBox statisticsPane = loader.load();
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            Scene scene = new Scene(statisticsPane);
+            scene.getStylesheets().add(
+                    AuthService.class.getResource("/org/example/expensetrackerui/css/statistics_screen.css").toExternalForm());
+
+            stage.setTitle("Monthly statistics");
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.showAndWait();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
