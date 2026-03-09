@@ -22,4 +22,9 @@ public class ExpenseDataParser {
     public static String serializeExpense(Expense expense) {
         return gson.toJson(expense);
     }
+
+    public static List<String> parseCategoryList(String jsonResponseBody) {
+        Type categoryListType = new TypeToken<List<String>>() {}.getType();
+        return gson.fromJson(jsonResponseBody, categoryListType);
+    }
 }
